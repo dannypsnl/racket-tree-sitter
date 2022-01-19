@@ -10,7 +10,7 @@
 
 (define source-code "(+ 1 2)")
 (define tree (parse-string p #f source-code))
-tree
+
 (define root (root-node tree))
 (displayln (node->string root))
 
