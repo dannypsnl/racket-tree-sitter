@@ -1,14 +1,11 @@
 #lang racket/base
 (require ffi/unsafe
-         ffi/unsafe/alloc
          "definer.rkt")
 
 (define-treesitter commonlisp (_fun -> _TSLanguageRef)
   #:c-id tree_sitter_commonlisp)
 
-(define make-parser ((allocator parser-delete) parser-new))
-
-(define p (make-parser))
+(define p (parser-new))
 (set-language p (commonlisp))
 
 (define source-code "(+ 1 2)")

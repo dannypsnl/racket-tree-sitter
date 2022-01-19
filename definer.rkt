@@ -2,7 +2,8 @@
 (provide (all-defined-out))
 
 (require ffi/unsafe
-         ffi/unsafe/define)
+         ffi/unsafe/define
+         ffi/unsafe/alloc)
 
 (define-ffi-definer define-treesitter
   (ffi-lib "./zig-out/lib/libtree-sitter" '(#f)))
@@ -30,9 +31,11 @@
 
 ; parser
 (define-treesitter parser-new (_fun -> _TSParserRef)
-  #:c-id ts_parser_new)
+  #:c-id ts_parser_new
+  #:wrap (allocator parser-delete))
 (define-treesitter parser-delete (_fun _TSParserRef -> _void)
-  #:c-id ts_parser_delete)
+  #:c-id ts_parser_delete
+  #:wrap (deallocator))
 (define-treesitter set-language (_fun _TSParserRef _TSLanguageRef -> _bool)
   #:c-id ts_parser_set_language)
 (define-treesitter get-language (_fun _TSParserRef -> _TSLanguageRef)
