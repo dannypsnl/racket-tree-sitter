@@ -23,7 +23,12 @@
                (bytes-read : _uint32)
                -> _bytes)]
    [encoding _TSInputEncoding]))
+(define-cstruct _TSNode
+  ([context (_list o _uint32 4)]
+   [id _pointer]
+   [tree _TSTreeRef]))
 
+; parser
 (define-treesitter parser-new (_fun -> _TSParserRef)
   #:c-id ts_parser_new)
 (define-treesitter parser-delete (_fun _TSParserRef -> _void)
@@ -44,3 +49,13 @@
   #:c-id ts_parser_parse_string_encoding)
 (define-treesitter reset (_fun _TSParserRef -> _void)
   #:c-id ts_parser_reset)
+
+; tree
+(define-treesitter tree-delete (_fun _TSTreeRef -> _void)
+  #:c-id ts_tree_delete)
+(define-treesitter root-node (_fun _TSTreeRef -> _TSNode)
+  #:c-id ts_tree_root_node)
+
+; node
+(define-treesitter node->string (_fun _TSNode -> _string)
+  #:c-id ts_node_string)
