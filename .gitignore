@@ -6,3 +6,4 @@ compiled/
 /doc/
 zig-cache/
 zig-out/
+a.out
