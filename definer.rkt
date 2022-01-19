@@ -24,7 +24,7 @@
                -> _bytes)]
    [encoding _TSInputEncoding]))
 (define-cstruct _TSNode
-  ([context (_list o _uint32 4)]
+  ([context (_array _uint32 4)]
    [id _pointer]
    [tree _TSTreeRef]))
 
@@ -43,9 +43,20 @@
   #:c-id ts_parser_included_ranges)
 (define-treesitter parse (_fun _TSParserRef _TSTreeRef _TSInput -> _TSTreeRef)
   #:c-id ts_parser_parse)
-(define-treesitter parse-string (_fun _TSParserRef _TSTreeRef _bytes _uint32 -> _TSTreeRef)
+(define-treesitter parse-string (_fun (parser old-tree source-code) ::
+                                      (parser : _TSParserRef)
+                                      (old-tree : (_cpointer/null 'TSTree))
+                                      (source-code : _string)
+                                      (_uint32 = (string-length source-code))
+                                      -> _TSTreeRef)
   #:c-id ts_parser_parse_string)
-(define-treesitter parse-string-encoding (_fun _TSParserRef _TSTreeRef _bytes _uint32 _TSInputEncoding -> _TSTreeRef)
+(define-treesitter parse-string-encoding (_fun (parser old-tree source-code encoding) ::
+                                               (parser : _TSParserRef)
+                                               (old-tree : (_cpointer/null 'TSTree))
+                                               (source-code : _string)
+                                               (_uint32 = (string-length source-code))
+                                               (encoding : _TSInputEncoding)
+                                               -> _TSTreeRef)
   #:c-id ts_parser_parse_string_encoding)
 (define-treesitter reset (_fun _TSParserRef -> _void)
   #:c-id ts_parser_reset)
