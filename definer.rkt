@@ -1,4 +1,6 @@
 #lang racket/base
+(provide (all-defined-out))
+
 (require ffi/unsafe
          ffi/unsafe/define)
 
@@ -40,3 +42,5 @@
   #:c-id ts_parser_parse_string)
 (define-treesitter parse-string-encoding (_fun _TSParserRef _TSTreeRef _bytes _uint32 _TSInputEncoding -> _TSTreeRef)
   #:c-id ts_parser_parse_string_encoding)
+(define-treesitter reset (_fun _TSParserRef -> _void)
+  #:c-id ts_parser_reset)
