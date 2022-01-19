@@ -7,6 +7,7 @@
 
 (define _TSParserRef (_cpointer 'TSParser))
 (define _TSLanguageRef (_cpointer 'TSLanguage))
+(define _TSRangeRef (_cpointer 'TSRange))
 
 (define-treesitter parser-new (_fun -> _TSParserRef)
   #:c-id ts_parser_new)
@@ -16,3 +17,7 @@
   #:c-id ts_parser_set_language)
 (define-treesitter get-language (_fun _TSParserRef -> _TSLanguageRef)
   #:c-id ts_parser_language)
+(define-treesitter set-included-ranges (_fun _TSParserRef _TSRangeRef _uint32 -> _bool)
+  #:c-id ts_parser_set_included_ranges)
+(define-treesitter get-included-ranges (_fun _TSParserRef (_cpointer _uint32) -> _TSRangeRef)
+  #:c-id ts_parser_included_ranges)
