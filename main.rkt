@@ -1,8 +1,11 @@
 #lang racket/base
 (require ffi/unsafe
+         ffi/unsafe/define
          "definer.rkt")
 
-(define-treesitter commonlisp (_fun -> _TSLanguageRef)
+(define-ffi-definer define-ts-commonlisp
+  (ffi-lib "./zig-out/lib/libtree-sitter" '(#f)))
+(define-ts-commonlisp commonlisp (_fun -> _TSLanguageRef)
   #:c-id tree_sitter_commonlisp)
 
 (define p (parser-new))

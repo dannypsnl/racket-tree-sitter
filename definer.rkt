@@ -5,8 +5,11 @@
          ffi/unsafe/define
          ffi/unsafe/alloc)
 
+(define (get-lib-dir)
+  (list "/usr/local/lib"))
 (define-ffi-definer define-treesitter
-  (ffi-lib "./zig-out/lib/libtree-sitter" '(#f)))
+  (ffi-lib "libtree-sitter" '(#f)
+           #:get-lib-dirs get-lib-dir))
 
 (define _TSParserRef (_cpointer 'TSParser))
 (define _TSTreeRef (_cpointer 'TSTree))
