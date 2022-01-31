@@ -98,7 +98,11 @@
   #:c-id ts_tree_root_node)
 (define-treesitter tree-copy (_fun _TSTreeRef -> _TSTreeRef)
   #:c-id ts_tree_copy)
+(define-treesitter tree-language (_fun _TSTreeRef -> _TSLanguageRef)
+  #:c-id ts_tree_language)
 
 ; node
+(define-treesitter node-type (_fun _TSNode -> _string)
+  #:c-id ts_node_type)
 (define-treesitter node->string (_fun _TSNode -> _string)
   #:c-id ts_node_string)
