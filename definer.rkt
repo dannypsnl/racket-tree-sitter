@@ -92,9 +92,12 @@
 
 ; tree
 (define-treesitter tree-delete (_fun _TSTreeRef -> _void)
-  #:c-id ts_tree_delete)
+  #:c-id ts_tree_delete
+  #:wrap (deallocator))
 (define-treesitter root-node (_fun _TSTreeRef -> _TSNode)
   #:c-id ts_tree_root_node)
+(define-treesitter tree-copy (_fun _TSTreeRef -> _TSTreeRef)
+  #:c-id ts_tree_copy)
 
 ; node
 (define-treesitter node->string (_fun _TSNode -> _string)
