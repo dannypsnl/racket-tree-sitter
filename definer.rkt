@@ -84,6 +84,11 @@
   #:c-id ts_parser_set_logger)
 (define-treesitter get-logger (_fun _TSParserRef -> _TSLogger)
   #:c-id ts_parser_logger)
+(define-treesitter print-dot-graphs (_fun (parser file-descriptor) ::
+                                          (parser : _TSParserRef)
+                                          (file-descriptor : _int)
+                                          -> _void)
+  #:c-id ts_parser_print_dot_graphs)
 
 ; tree
 (define-treesitter tree-delete (_fun _TSTreeRef -> _void)
