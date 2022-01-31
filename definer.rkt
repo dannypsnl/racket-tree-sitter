@@ -72,6 +72,18 @@
   #:c-id ts_parser_parse_string_encoding)
 (define-treesitter reset (_fun _TSParserRef -> _void)
   #:c-id ts_parser_reset)
+(define-treesitter set-timeout-micros (_fun _TSParserRef _uint64 -> _void)
+  #:c-id ts_parser_set_timeout_micros)
+(define-treesitter get-timeout-micros (_fun _TSParserRef -> _uint64)
+  #:c-id ts_parser_timeout_micros)
+(define-treesitter set-cancellation-flag (_fun _TSParserRef (_cpointer _size) -> _void)
+  #:c-id ts_parser_set_cancellation_flag)
+(define-treesitter get-cancellation-flag (_fun _TSParserRef -> (_cpointer _size))
+  #:c-id ts_parser_cancellation_flag)
+(define-treesitter set-logger (_fun _TSParserRef _TSLogger -> _void)
+  #:c-id ts_parser_set_logger)
+(define-treesitter get-logger (_fun _TSParserRef -> _TSLogger)
+  #:c-id ts_parser_logger)
 
 ; tree
 (define-treesitter tree-delete (_fun _TSTreeRef -> _void)
