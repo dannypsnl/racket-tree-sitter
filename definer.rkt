@@ -15,6 +15,8 @@
 (define-cstruct _TSPoint ([row _uint32] [column _uint32]))
 (define _TSInputEncoding
   (_enum '(TSInputEncodingUTF8 TSInputEncodingUTF16)))
+(define _TSLogType
+  (_enum '(TSLogTypeParse TSLogTypeLex)))
 (define-cstruct _TSInput
   ([payload _pointer]
    [read (_fun (payload byte-index position bytes-read) ::
@@ -28,14 +30,21 @@
   ([context (_array _uint32 4)]
    [id _pointer]
    [tree _TSTreeRef]))
+(define-cstruct _TSLogger
+  ([payload _pointer]
+   [log (_fun (payload typ message) ::
+              (payload : _pointer)
+              (typ : _TSLogType)
+              (message : _string)
+              -> _void)]))
 
 ; parser
-(define-treesitter parser-new (_fun -> _TSParserRef)
-  #:c-id ts_parser_new
-  #:wrap (allocator parser-delete))
 (define-treesitter parser-delete (_fun _TSParserRef -> _void)
   #:c-id ts_parser_delete
   #:wrap (deallocator))
+(define-treesitter parser-new (_fun -> _TSParserRef)
+  #:c-id ts_parser_new
+  #:wrap (allocator parser-delete))
 (define-treesitter set-language (_fun _TSParserRef _TSLanguageRef -> _bool)
   #:c-id ts_parser_set_language)
 (define-treesitter get-language (_fun _TSParserRef -> _TSLanguageRef)
