@@ -1,10 +1,10 @@
 #lang scribble/manual
-@require[@for-label[tree-sitter
+@require[@for-label[racket-tree-sitter
                     racket/base]]
 
-@title{tree-sitter}
+@title{racket-tree-sitter}
 @author{linzizhuan}
 
-@defmodule[tree-sitter]
+@defmodule[racket-tree-sitter]
 
 Package Description Here
