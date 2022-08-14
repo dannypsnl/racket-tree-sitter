@@ -15,6 +15,9 @@
 (define _TSTreeRef (_cpointer 'TSTree))
 (define _TSLanguageRef (_cpointer 'TSLanguage))
 (define _TSRangeRef (_cpointer 'TSRange))
+(define _TSInputEditRef (_cpointer 'TSInputEdit))
+(define _TSSymbol _uint16)
+(define _TSFieldId _uint16)
 (define-cstruct _TSPoint ([row _uint32] [column _uint32]))
 (define _TSInputEncoding
   (_enum '(TSInputEncodingUTF8 TSInputEncodingUTF16)))
@@ -40,6 +43,13 @@
               (typ : _TSLogType)
               (message : _string)
               -> _void)]))
+(define-cstruct _TSInputEdit
+  ([start_byte _uint32]
+   [old_end_byte _uint32]
+   [new_end_byte _uint32]
+   [start_point _TSPoint]
+   [old_end_point _TSPoint]
+   [new_end_point _TSPoint]))
 
 ; parser
 (define-treesitter parser-delete (_fun _TSParserRef -> _void)
@@ -94,18 +104,81 @@
   #:c-id ts_parser_print_dot_graphs)
 
 ; tree
+(define-treesitter tree-copy (_fun _TSTreeRef -> _TSTreeRef)
+  #:c-id ts_tree_copy)
 (define-treesitter tree-delete (_fun _TSTreeRef -> _void)
   #:c-id ts_tree_delete
   #:wrap (deallocator))
 (define-treesitter root-node (_fun _TSTreeRef -> _TSNode)
   #:c-id ts_tree_root_node)
-(define-treesitter tree-copy (_fun _TSTreeRef -> _TSTreeRef)
-  #:c-id ts_tree_copy)
 (define-treesitter tree-language (_fun _TSTreeRef -> _TSLanguageRef)
   #:c-id ts_tree_language)
+(define-treesitter tree-edit (_fun _TSTreeRef _TSInputEditRef -> _void)
+  #:c-id ts_tree_edit)
+(define-treesitter tree-get-changed-ranges (_fun (old-tree new-tree length) ::
+                                                 [old-tree : _TSTreeRef]
+                                                 [new-tree : _TSTreeRef]
+                                                 [length : (_cpointer _uint32)]
+                                                 -> _TSRangeRef)
+  #:c-id ts_tree_get_changed_ranges)
+
 
 ; node
 (define-treesitter node-type (_fun _TSNode -> _string)
   #:c-id ts_node_type)
+(define-treesitter node-symbol (_fun _TSNode -> _TSSymbol)
+  #:c-id ts_node_symbol)
+(define-treesitter node-start-byte (_fun _TSNode -> _uint32)
+  #:c-id ts_node_start_byte)
+(define-treesitter node-start-point (_fun _TSNode -> _TSPoint)
+  #:c-id ts_node_start_point)
+(define-treesitter node-end-byte (_fun _TSNode -> _uint32)
+  #:c-id ts_node_end_byte)
+(define-treesitter node-end-point (_fun _TSNode -> _TSPoint)
+  #:c-id ts_node_end_point)
 (define-treesitter node->string (_fun _TSNode -> _string)
   #:c-id ts_node_string)
+(define-treesitter node-is-null (_fun _TSNode -> _bool)
+  #:c-id ts_node_is_null)
+(define-treesitter node-is-named (_fun _TSNode -> _bool)
+  #:c-id ts_node_is_named)
+(define-treesitter node-is-missing (_fun _TSNode -> _bool)
+  #:c-id ts_node_is_missing)
+(define-treesitter node-is-extra (_fun _TSNode -> _bool)
+  #:c-id ts_node_is_extra)
+(define-treesitter node-has-changes (_fun _TSNode -> _bool)
+  #:c-id ts_node_has_changes)
+(define-treesitter node-has-error (_fun _TSNode -> _bool)
+  #:c-id ts_node_has_error)
+(define-treesitter node-parent (_fun _TSNode -> _TSNode)
+  #:c-id ts_node_parent)
+(define-treesitter node-child (_fun (node index) ::
+                                    (node : _TSNode)
+                                    (index : _uint32)
+                                    -> _TSNode)
+  #:c-id ts_node_child)
+(define-treesitter node-field-name-for-child (_fun (node index) ::
+                                                   (node : _TSNode)
+                                                   (index : _uint32)
+                                                   -> _string)
+  #:c-id ts_node_field_name_for_child)
+(define-treesitter node-child-count (_fun _TSNode -> _uint32)
+  #:c-id ts_node_child_count)
+(define-treesitter node-named-child (_fun (node index) ::
+                                          (node : _TSNode)
+                                          (index : _uint32)
+                                          -> _TSNode)
+  #:c-id ts_node_named_child)
+(define-treesitter node-named-child-count (_fun _TSNode -> _uint32)
+  #:c-id ts_node_named_child_count)
+(define-treesitter node-child-by-field-name (_fun (self field-name field-name-length) ::
+                                                  (self : _TSNode)
+                                                  (field-name : _string)
+                                                  (field-name-length : _uint32)
+                                                  -> _TSNode)
+  #:c-id ts_node_child_by_field_name)
+(define-treesitter node-child-by-field-id (_fun (node field-id) ::
+                                                (node : _TSNode)
+                                                (field-id : _TSFieldId)
+                                                -> _TSNode)
+  #:c-id ts_node_child_by_field_id)
