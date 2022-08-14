@@ -12,6 +12,11 @@ pub fn build(b: *Builder) !void {
     lib.addIncludeDir("./tree-sitter/lib/src/");
     lib.addCSourceFile("./tree-sitter/lib/src/lib.c", &flags);
     lib.setBuildMode(mode);
-
     lib.install();
+
+    const lib_commonlisp = b.addSharedLibrary("tree-sitter-commonlisp", null, .unversioned);
+    lib_commonlisp.addIncludeDir("./tree-sitter/lib/include/");
+    lib_commonlisp.addCSourceFile("./tree-sitter-commonlisp/src/parser.c", &flags);
+    lib_commonlisp.setBuildMode(mode);
+    lib_commonlisp.install();
 }
