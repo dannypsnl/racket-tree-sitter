@@ -1,23 +1,39 @@
 #lang racket/base
-(require ffi/unsafe
-         ffi/unsafe/define
-         "definer.rkt")
+(provide (all-from-out
+          "types.rkt"
+          "parser.rkt"
+          "node.rkt"
+          "tree.rkt"
+          "tree-cursor.rkt"
+          "query.rkt"
+          "query-cursor.rkt"))
+(require "types.rkt"
+         "parser.rkt"
+         "node.rkt"
+         "tree.rkt"
+         "tree-cursor.rkt"
+         "query.rkt"
+         "query-cursor.rkt")
 
-(define-ffi-definer define-commonlisp
-  (ffi-lib "./zig-out/lib/libtree-sitter-commonlisp" '(#f)))
+(module+ main
+  (require ffi/unsafe
+           ffi/unsafe/define)
 
-(define-commonlisp cl-language (_fun -> _TSLanguageRef)
-  #:c-id tree_sitter_commonlisp)
+  (define-ffi-definer define-commonlisp
+    (ffi-lib "./zig-out/lib/libtree-sitter-commonlisp" '(#f)))
 
-(define p (parser-new))
-(set-language p (cl-language))
+  (define-commonlisp cl-language (_fun -> _TSLanguageRef)
+    #:c-id tree_sitter_commonlisp)
 
-(define source-code "
+  (define p (parser-new))
+  (set-language p (cl-language))
+
+  (define source-code "
 (+ 1 2)
 ")
-(define tree (parse-string p #f source-code))
+  (define tree (parse-string p #f source-code))
 
-(define root (root-node tree))
-(displayln (node->string root))
+  (define root (root-node tree))
+  (displayln (node->string root))
 
-(tree-delete tree)
+  (tree-delete tree))

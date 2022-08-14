@@ -1,0 +1,57 @@
+#lang racket/base
+(provide (all-defined-out))
+(require ffi/unsafe
+         ffi/unsafe/alloc
+         "definer.rkt"
+         "types.rkt")
+
+(define-treesitter parser-delete (_fun _TSParserRef -> _void)
+  #:c-id ts_parser_delete
+  #:wrap (deallocator))
+(define-treesitter parser-new (_fun -> _TSParserRef)
+  #:c-id ts_parser_new
+  #:wrap (allocator parser-delete))
+(define-treesitter set-language (_fun _TSParserRef _TSLanguageRef -> _bool)
+  #:c-id ts_parser_set_language)
+(define-treesitter get-language (_fun _TSParserRef -> _TSLanguageRef)
+  #:c-id ts_parser_language)
+(define-treesitter set-included-ranges (_fun _TSParserRef _TSRangeRef _uint32 -> _bool)
+  #:c-id ts_parser_set_included_ranges)
+(define-treesitter get-included-ranges (_fun _TSParserRef (_cpointer _uint32) -> _TSRangeRef)
+  #:c-id ts_parser_included_ranges)
+(define-treesitter parse (_fun _TSParserRef _TSTreeRef _TSInput -> _TSTreeRef)
+  #:c-id ts_parser_parse)
+(define-treesitter parse-string (_fun (parser old-tree source-code) ::
+                                      (parser : _TSParserRef)
+                                      (old-tree : (_cpointer/null 'TSTree))
+                                      (source-code : _string)
+                                      (_uint32 = (string-length source-code))
+                                      -> _TSTreeRef)
+  #:c-id ts_parser_parse_string)
+(define-treesitter parse-string-encoding (_fun (parser old-tree source-code encoding) ::
+                                               (parser : _TSParserRef)
+                                               (old-tree : (_cpointer/null 'TSTree))
+                                               (source-code : _string)
+                                               (_uint32 = (string-length source-code))
+                                               (encoding : _TSInputEncoding)
+                                               -> _TSTreeRef)
+  #:c-id ts_parser_parse_string_encoding)
+(define-treesitter reset (_fun _TSParserRef -> _void)
+  #:c-id ts_parser_reset)
+(define-treesitter set-timeout-micros (_fun _TSParserRef _uint64 -> _void)
+  #:c-id ts_parser_set_timeout_micros)
+(define-treesitter get-timeout-micros (_fun _TSParserRef -> _uint64)
+  #:c-id ts_parser_timeout_micros)
+(define-treesitter set-cancellation-flag (_fun _TSParserRef (_cpointer _size) -> _void)
+  #:c-id ts_parser_set_cancellation_flag)
+(define-treesitter get-cancellation-flag (_fun _TSParserRef -> (_cpointer _size))
+  #:c-id ts_parser_cancellation_flag)
+(define-treesitter set-logger (_fun _TSParserRef _TSLogger -> _void)
+  #:c-id ts_parser_set_logger)
+(define-treesitter get-logger (_fun _TSParserRef -> _TSLogger)
+  #:c-id ts_parser_logger)
+(define-treesitter print-dot-graphs (_fun (parser file-descriptor) ::
+                                          (parser : _TSParserRef)
+                                          (file-descriptor : _int)
+                                          -> _void)
+  #:c-id ts_parser_print_dot_graphs)
