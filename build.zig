@@ -11,7 +11,6 @@ pub fn build(b: *Builder) !void {
     lib.addIncludeDir("./tree-sitter/lib/include/");
     lib.addIncludeDir("./tree-sitter/lib/src/");
     lib.addCSourceFile("./tree-sitter/lib/src/lib.c", &flags);
-    lib.addCSourceFile("../tree-sitter-racket/src/parser.c", &flags);
     lib.setBuildMode(mode);
 
     lib.install();
