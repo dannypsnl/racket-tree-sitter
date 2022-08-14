@@ -7,7 +7,7 @@ This is a racket binding to tree-sitter.
 1. clone
 
    ```shell
-   git clone https://github.com/dannypsnl/tree-sitter.git
+   git clone https://github.com/dannypsnl/racket-tree-sitter.git
    ```
 
 2. compile out shared lib
