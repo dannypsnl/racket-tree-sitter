@@ -1,6 +1,7 @@
 #lang racket/base
 (provide (all-from-out
           "types.rkt"
+          "language.rkt"
           "parser.rkt"
           "node.rkt"
           "tree.rkt"
@@ -8,6 +9,7 @@
           "query.rkt"
           "query-cursor.rkt"))
 (require "types.rkt"
+         "language.rkt"
          "parser.rkt"
          "node.rkt"
          "tree.rkt"
