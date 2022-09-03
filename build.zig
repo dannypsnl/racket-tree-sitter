@@ -8,15 +8,26 @@ pub fn build(b: *Builder) !void {
         "-std=c99",
         "-Wno-unused-parameter",
     };
+    const cxx_flags = [_][]const u8{
+        "-std=c++17",
+        "-Wno-unused-parameter",
+    };
+
     lib.addIncludeDir("./tree-sitter/lib/include/");
     lib.addIncludeDir("./tree-sitter/lib/src/");
     lib.addCSourceFile("./tree-sitter/lib/src/lib.c", &flags);
     lib.setBuildMode(mode);
     lib.install();
 
-    const lib_commonlisp = b.addSharedLibrary("tree-sitter-commonlisp", null, .unversioned);
-    lib_commonlisp.addIncludeDir("./tree-sitter/lib/include/");
-    lib_commonlisp.addCSourceFile("./tree-sitter-commonlisp/src/parser.c", &flags);
-    lib_commonlisp.setBuildMode(mode);
-    lib_commonlisp.install();
+    const lib_racket = b.addSharedLibrary("tree-sitter-racket", null, .unversioned);
+    lib_racket.addIncludeDir("./tree-sitter/lib/include/");
+    lib_racket.linkLibCpp();
+    lib_racket.addCSourceFiles(&[_][]const u8{
+        "./tree-sitter-racket/src/parser.c",
+    }, &flags);
+    lib_racket.addCSourceFiles(&[_][]const u8{
+        "./tree-sitter-racket/src/scanner.cc",
+    }, &cxx_flags);
+    lib_racket.setBuildMode(mode);
+    lib_racket.install();
 }

@@ -36,4 +36,4 @@ For tree-sitter shared library, you can install it manually or follow the follow
 
 ### Development
 
-If you interest about developing this tree-sitter binding, once you clone repo and init submodules, the code in `main.rkt` should have an example that uses [tree-sitter-commonlisp](https://github.com/theHamsta/tree-sitter-commonlisp).
+If you interest about developing this tree-sitter binding, once you clone repo and init submodules, the code in `main.rkt` should have an example that uses [tree-sitter-racket](https://github.com/6cdh/tree-sitter-racket).
