@@ -39,7 +39,7 @@
 
 (define _TSQueryCursorRef (_cpointer 'TSQueryCursor))
 (define _TSQueryMatchRef (_cpointer 'TSQueryMatch))
-(define _TSQueryCaptureRef (_cpointer 'TSQueryCapture))
+(define _TSQueryCaptureRef (_cpointer/null 'TSQueryCapture))
 (define-cstruct _TSQueryMatch
   ([id _uint32]
    [pattern_index _uint16]
