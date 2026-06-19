@@ -4,6 +4,26 @@
          "definer.rkt"
          "types.rkt")
 
+;; Load a grammar shared library and return its TSLanguage.
+;;
+;;   (load-language "ts-grammars/go/go" "go")
+;;
+;; `lib-path` is the path to the compiled grammar (without or with the
+;; platform extension; ffi-lib resolves it). `lang-name` is the grammar name
+;; used in the exported C entry point `tree_sitter_<lang-name>`.
+;; A per-(path,name) cache keeps the loaded language stable across calls.
+(define language-cache (make-hash))
+(define (load-language lib-path lang-name)
+  (hash-ref!
+   language-cache (cons (if (path? lib-path) (path->string lib-path) lib-path)
+                        lang-name)
+   (lambda ()
+     (define lib (ffi-lib lib-path '(#f)))
+     (define entry
+       (get-ffi-obj (format "tree_sitter_~a" lang-name) lib
+                    (_fun -> _TSLanguageRef)))
+     (entry))))
+
 (define-treesitter language-symbol-count (_fun _TSLanguageRef -> _uint32)
   #:c-id ts_language_symbol_count)
 (define-treesitter language-symbol-name (_fun _TSLanguageRef _TSSymbol -> _string)

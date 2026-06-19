@@ -21,13 +21,16 @@
   #:c-id ts_parser_included_ranges)
 (define-treesitter parse (_fun _TSParserRef _TSTreeRef _TSInput -> _TSTreeRef)
   #:c-id ts_parser_parse)
-(define-treesitter parse-string (_fun (parser old-tree source-code) ::
-                                      (parser : _TSParserRef)
-                                      (old-tree : (_cpointer/null 'TSTree))
-                                      (source-code : _string)
-                                      (_uint32 = (string-length source-code))
-                                      -> _TSTreeRef)
+(define-treesitter parse-string-bytes (_fun (parser old-tree src len) ::
+                                            (parser : _TSParserRef)
+                                            (old-tree : (_cpointer/null 'TSTree))
+                                            (src : _bytes)
+                                            (len : _uint32)
+                                            -> _TSTreeRef)
   #:c-id ts_parser_parse_string)
+(define (parse-string parser old-tree source-code)
+  (define bs (if (bytes? source-code) source-code (string->bytes/utf-8 source-code)))
+  (parse-string-bytes parser old-tree bs (bytes-length bs)))
 (define-treesitter parse-string-encoding (_fun (parser old-tree source-code encoding) ::
                                                (parser : _TSParserRef)
                                                (old-tree : (_cpointer/null 'TSTree))

@@ -29,3 +29,13 @@
   #:c-id ts_query_cursor_remove_match)
 (define-treesitter query-cursor-next-capture (_fun _TSQueryCursorRef _TSQueryMatch _uint32 -> _bool)
   #:c-id ts_query_cursor_next_capture)
+
+;; Advance the cursor and return the next match as a populated _TSQueryMatch
+;; struct, or #f when iteration is done. Read its captures with
+;;   (ptr-ref (TSQueryMatch-captures m) _TSQueryCapture i)
+;; for i in [0, (TSQueryMatch-capture_count m)).
+(define (query-cursor-next-match! cursor)
+  ;; Allocate uninitialised storage rather than make-TSQueryMatch, whose
+  ;; `captures` field is a non-null pointer that can't take a placeholder.
+  (define m (cast (malloc _TSQueryMatch 'atomic) _pointer _TSQueryMatch-pointer))
+  (and (query-cursor-next-match cursor m) m))

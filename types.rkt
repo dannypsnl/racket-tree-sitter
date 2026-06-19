@@ -46,6 +46,16 @@
    [capture_count _uint16]
    [captures _TSQueryCaptureRef]))
 
+;; TSQueryPredicateStepType: Done = 0, Capture = 1, String = 2
+(define _TSQueryPredicateStepType
+  (_enum '(TSQueryPredicateStepTypeDone
+           TSQueryPredicateStepTypeCapture
+           TSQueryPredicateStepTypeString)))
+;; { TSQueryPredicateStepType type; uint32_t value_id; }
+(define-cstruct _TSQueryPredicateStep
+  ([type _TSQueryPredicateStepType]
+   [value_id _uint32]))
+
 (define-cstruct _TSPoint ([row _uint32] [column _uint32]))
 
 (define _TSLogType
@@ -65,6 +75,13 @@
   ([context (_array _uint32 4)]
    [id _pointer]
    [tree _TSTreeRef]))
+
+;; A single capture inside a match: { TSNode node; uint32_t index; }
+;; Read entries out of TSQueryMatch.captures with (ptr-ref captures _TSQueryCapture i).
+;; Defined after _TSNode because it embeds one by value.
+(define-cstruct _TSQueryCapture
+  ([node _TSNode]
+   [index _uint32]))
 
 (define _TSTreeCursorRef (_cpointer 'TSTreeCursor))
 (define-cstruct _TSTreeCursor
