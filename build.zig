@@ -1,10 +1,10 @@
 const std = @import("std");
-const Builder = std.build.Builder;
 
-pub fn build(b: *Builder) !void {
-    const mode = b.standardReleaseOptions();
-    const lib = b.addSharedLibrary("tree-sitter", null, .unversioned);
-    const flags = [_][]const u8{
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const c_flags = [_][]const u8{
         "-std=c99",
         "-Wno-unused-parameter",
     };
@@ -13,21 +13,45 @@ pub fn build(b: *Builder) !void {
         "-Wno-unused-parameter",
     };
 
-    lib.addIncludeDir("./tree-sitter/lib/include/");
-    lib.addIncludeDir("./tree-sitter/lib/src/");
-    lib.addCSourceFile("./tree-sitter/lib/src/lib.c", &flags);
-    lib.setBuildMode(mode);
-    lib.install();
+    // libtree-sitter
+    const ts_mod = b.createModule(.{
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+    });
+    ts_mod.addIncludePath(b.path("tree-sitter/lib/include"));
+    ts_mod.addIncludePath(b.path("tree-sitter/lib/src"));
+    ts_mod.addCSourceFile(.{
+        .file = b.path("tree-sitter/lib/src/lib.c"),
+        .flags = &c_flags,
+    });
+    const lib = b.addLibrary(.{
+        .name = "tree-sitter",
+        .linkage = .dynamic,
+        .root_module = ts_mod,
+    });
+    b.installArtifact(lib);
 
-    const lib_racket = b.addSharedLibrary("tree-sitter-racket", null, .unversioned);
-    lib_racket.addIncludeDir("./tree-sitter/lib/include/");
-    lib_racket.linkLibCpp();
-    lib_racket.addCSourceFiles(&[_][]const u8{
-        "./tree-sitter-racket/src/parser.c",
-    }, &flags);
-    lib_racket.addCSourceFiles(&[_][]const u8{
-        "./tree-sitter-racket/src/scanner.cc",
-    }, &cxx_flags);
-    lib_racket.setBuildMode(mode);
-    lib_racket.install();
+    // libtree-sitter-racket grammar
+    const racket_mod = b.createModule(.{
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+        .link_libcpp = true,
+    });
+    racket_mod.addIncludePath(b.path("tree-sitter/lib/include"));
+    racket_mod.addCSourceFile(.{
+        .file = b.path("tree-sitter-racket/src/parser.c"),
+        .flags = &c_flags,
+    });
+    racket_mod.addCSourceFile(.{
+        .file = b.path("tree-sitter-racket/src/scanner.cc"),
+        .flags = &cxx_flags,
+    });
+    const lib_racket = b.addLibrary(.{
+        .name = "tree-sitter-racket",
+        .linkage = .dynamic,
+        .root_module = racket_mod,
+    });
+    b.installArtifact(lib_racket);
 }

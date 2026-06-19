@@ -4,6 +4,6 @@
 .DS_Store
 compiled/
 /doc/
-zig-cache/
+.zig-cache/
 zig-out/
 a.out
